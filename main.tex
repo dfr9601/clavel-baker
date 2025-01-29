@@ -1,0 +1,361 @@
+% !TEX encoding = UTF-8 Unicode
+% !TEX TS-program = XeLaTeX
+
+%% pagestyle alterations per user request 14 xii 2020
+
+%-----------------------------------------------------------------------------------------------%
+% Shamelessly stolen and modified from: 
+% https://tex.stackexchange.com/questions/366229/an-aesthetically-pleasing-recipe-book-template
+% Cover page: 
+%https://app.biorender.com/illustrations/679a31882a3a591d4bb77d34?slideId=cfcef9a9-fea8-4829-b353-7f4a721f3def
+% DF 2025-01-29
+%-----------------------------------------------------------------------------------------------%
+
+\documentclass{article}
+\renewcommand{\contentsname}{The Official AG Clavel Baker's Book}
+\usepackage{fancyhdr}
+\usepackage{rotating}
+\usepackage{multicol}
+\usepackage[%
+    %a5paper,
+    papersize={5.5in,8.5in},
+    margin=0.75in,
+    top=0.75in,
+    bottom=0.75in,
+    %twoside
+    ]{geometry}
+\usepackage{xcolor}
+\usepackage{graphicx}
+
+\raggedcolumns
+\setlength{\multicolsep}{0pt}
+\setlength{\columnseprule}{1pt}
+
+\makeatletter
+
+%% Used for the headnote and in \showit
+%% If the text is small it is placed on one line;
+%% otherwise it is put into a raggedright paragraph.
+\long\def\testoneline#1{%
+  \sbox\@tempboxa{#1}%
+  \ifdim \wd\@tempboxa <0.75\linewidth
+        \begingroup
+            \itshape
+            #1\par
+        \endgroup
+  \else
+    \parbox{0.75\linewidth}{\raggedright\itshape#1}%
+    \par
+  \fi
+}
+
+\newif\if@mainmatter \@mainmattertrue
+
+%% Borrowed from book.cls
+\newcommand\frontmatter{%
+    \cleardoublepage
+  \@mainmatterfalse
+  \pagenumbering{roman}}
+\newcommand\mainmatter{%
+    \cleardoublepage
+  \@mainmattertrue
+  \pagenumbering{arabic}}
+\makeatother
+
+%% Vary the colors at will
+
+\definecolor{vegcolor}{rgb}{0,0.5,0.2}
+\definecolor{frzcolor}{rgb}{0,0,1}
+\definecolor{dessertcolor}{rgb}{0.5,0.2,0.1}
+\definecolor{makeaheadcolor}{rgb}{0.5,0.5,0.6}
+
+%% Thanks to alephzero for the excellent start:
+\newcommand{\recipe}[2][]{%
+    \newpage
+    \thispagestyle{fancy}
+    \lhead{}%
+    \chead{}%
+    \rhead{}%
+    \lfoot{}%
+    \rfoot{}%
+    \section{#2}%
+    \if###1##%
+    \else
+        \begin{center}
+            \testoneline{#1}%
+        \end{center}
+    \fi
+}
+\newcommand{\serves}[2][Serves]{%
+    \chead{#1 #2}}
+\newcommand{\dishtype}[1]{%
+    \rhead{#1}%
+}
+\newcommand{\dishother}[1]{%
+    \lhead{#1}%
+}
+%% Optional arguments for alternate names for these:
+\newcommand{\preptime}[2][Prep time]{%
+    \lfoot{#1: #2}%
+}
+\newcommand{\cooktime}[2][Cook time]{%
+    \rfoot{#1: #2}%
+}
+\newcommand{\temp}[1]{%
+    $#1^\circ$C}
+%% Optional argument is the width of the graphic, default = 1in
+\newcommand{\showit}[3][1in]{%
+    \begin{center}
+        \bigskip
+            \includegraphics[width=#1]{#2}%
+            \par
+            \medskip
+            \testoneline{#3}%
+            \par
+    \end{center}%
+}
+
+%% Optional argument for a  heading within the ingredients section
+\newcommand{\ingredients}[1][]{%
+    \if###1##%
+        {\color{red}\Large\textbf{Ingredients}}%
+    \else
+        \emph{#1}%
+    \fi
+}
+
+%% Use \obeylines to minimize markup
+\newenvironment{ingreds}{%
+    \parindent0pt
+    \noindent
+    \ingredients
+    \par
+    \smallskip
+    \begin{multicols}{2}
+    \leftskip1em
+    \rightskip0pt plus 3em
+    \parskip=0.25em
+    \obeylines
+    \everypar={\hangindent2em}
+}{%
+    \end{multicols}%
+    \medskip
+}
+
+\newcounter{stepnum}
+
+%% Optional argument for an italicized pre-step
+%% Also use obeylines to minimize markup here as well
+\newenvironment{method}[1][]{%
+    \setcounter{stepnum}{0}
+    \noindent
+    {\color{red}\Large\textbf{Instructions}}%
+    \par
+    \smallskip
+    \if###1##%
+    \else
+        \noindent
+        \emph{#1}
+        \par
+    \fi
+    \begingroup
+    \parindent0pt
+    \parskip0.25em
+        \leftskip2em
+    \everypar={\llap{\stepcounter{stepnum}\hbox to2em{\thestepnum.\hfill}}}
+}{%
+    \par
+    \endgroup
+    }
+
+\pagestyle{plain}
+
+\begin{document}
+\newpage
+\pagenumbering{gobble}
+
+% Cover page as whole-page figure from biorende.png shamelessly stolen from:
+% https://stackoverflow.com/a/17087684
+\begin{figure*}[tb] 
+\centering
+ \makebox[\textwidth]{\includegraphics[width=.9\paperwidth]{agclavelbakersbook.png}}
+\end{figure*}
+\frontmatter
+
+\tableofcontents
+
+\mainmatter
+% https://www.chefkoch.de/rezepte/98171039097819/Marmeladenkekse.html
+\recipe[Roses are red, violets are blue - this \textit{Serratia} raspberry jam hopefully wasn't isolated from poo.]{\textit{Serratia} Raspberry Cookies}
+\serves{2}
+\preptime{$\frac{1}{2}$}
+\cooktime[Chill time]{$\frac{1}{2}$ hour}
+\begin{ingreds}
+     250 g flour
+     1 tsp. baking soda
+     100 g sugar
+     1 pack vanilla sugar
+     a pinch of salt
+     3 egg yolks
+     150 g margarine
+     raspberry jam
+     coarse sugar
+\end{ingreds}
+
+\begin{method}[Preheat the oven to \temp{180}.]
+     Mix all ingredients except the jam and coarse sugar in a bowl. Knead by hand until homogenous.
+
+     Portion small pieces of the dough with a spoon and form into small dough balls.
+
+     Slightly press down on the dough balls, forming an indent in the middle. Fill the indent with a small portion of raspberry jam.
+
+     Bake @ \temp{180} for 15 minutes.
+
+\end {method}
+
+% https://www.chefkoch.de/rezepte/27991006942792/Kokosnuss-Orangen-Baellchen.html
+\recipe[Streptococci? Staphylococci? Who cares! Don't mind the sore throat or invasive soft-tissue infections.]{\textit{Cocci}-Nut ball biscuits}
+\serves{2}
+\preptime{$\frac{1}{2}$ hour}
+\cooktime[Chill time]{1 hour}
+\begin{ingreds}
+     200 g cookies, crumbled
+     150 g powdered sugar
+     80 g margarine
+     $\frac{1}{2}$ orange, juice and pulp
+     80 g chopped almonds
+     60 g coconut flakes
+\end{ingreds}
+
+\begin{method}[]
+     Mix together crumbled cookies and powdered sugar. Add margarine, orange juice, pulp and chopped almonds.
+
+     Thoroughly knead the dough and form balls with a diameter of approximately 3 cm. Roll through coconut flakes, set aside.
+
+     Place the prepared balls on either a plate or cutting board. Let chill in fridge for approximately 1 hour.
+
+\end {method}
+
+% https://www.chefkoch.de/rezepte/2040561330436979/Zimtschnecken-mit-Frischkaese-Glasur.html
+\recipe[\textit{Collinsella} will take care of all your lipolytic needs. Eat as many buns as you want, guilt-free!]{\textit{Collinsella} Cinnamon Buns}
+\serves{4}
+\preptime{$\frac{1}{2}$ hour}
+\cooktime[Baking time]{$\frac{1}{2}$ hours}
+\begin{ingreds}
+\ingredients[Dough]
+     200 ml milk
+     50 g butter
+     450 g flour
+     a pinch of salt
+     1 egg
+     1 cube of fresh yeast
+     grease for baking mould
+\columnbreak
+\ingredients[Filling]
+     50 g butter, soft
+     130 g brown sugar
+     2 tsp. cinnamon
+\ingredients[Glaze]
+     100 g cream cheese
+     30 g butter
+     100 g powdered sugar
+     1 pack of vanilla sugar
+\end{ingreds}
+
+\begin{method}[Preheat the oven to \temp{180}]
+    Warm up milk and butter until butter liquefies.
+
+     Add together 450 g of flour, salt, sugar and egg into a bowl. Form an indent, crumble yeast into the indent and add milk. Knead the dough until smooth, if necessary add some additional flour to make the dough more workable.
+
+     Roll out the dough into a rectangular shape and brush with butter. Mix sugar and cinnamon for the filling, spread across the dough. Roll up from the long side and cut into 2-3 cm thick slices. Place with cut face onto a greased mould and allow dough to rise for 30 minutes.
+
+     Mix all ingredients for the glaze. If too thick, add a small amount of milk.
+
+     Bake buns @ \temp{180} in pre-heated oven for 15 to 20 minutes. Let buns cool down for 5-10 minutes and spread the glaze on top.
+
+\end {method}
+
+% https://www.chefkoch.de/rezepte/1590851266417641/Einfache-Schoko-Plaetzchen.html
+\recipe[Did you know that \textit{Escherichia coli} was isolated from infant poop? Enjoy the extra-chocolatey goodness of this treat!]{\textit{Escherichia Choccoli} Cookies}
+\serves{4}
+\preptime{$\frac{1}{2}$ hour}
+\cooktime[Chill time]{$\frac{1}{2}$ hours}
+\begin{ingreds}
+     300 g flour
+     150 g butter
+     100 g sugar
+     2 eggs
+     $\frac{1}{2}$ pack baking soda
+     2 tbsp. cocoa powder
+     powdered sugar
+\end{ingreds}
+
+\begin{method}[Preheat the oven to \temp{180}]
+     Mix all ingredients together into shortcrust pastry dough. If not firm enough, add 1-2 tbsp. flour.
+
+     Wrap dough into cling wrap and leave to chill in the fridge for about 30 minutes.
+
+     Roll out the dough and cut out cookies with a cookie cutter.
+
+     Place cut out cookies on a tray, bake @ \temp{180} in pre-heated oven for 10 minutes.
+
+\end {method}
+
+% https://www.chefkoch.de/rezepte/1330761237911954/Pater-Pius-Butterplaetzchen.html?portionen=0.50
+\recipe[This recipe is not only guaranteed to brighten your mood, but will \textit{\textbf{surely}} fix your upset stomach as well!]{\textit{Helicobatter} Shortbread Cookies}
+\serves{2}
+\preptime{$\frac{1}{2}$ hour}
+\cooktime[Chill time]{$\frac{1}{2}$ hours}
+\begin{ingreds}
+     375 g flour
+     250 g butter
+     125 g powdered sugar
+     2 egg yolks
+     $\frac{1}{2}$ pack of baking soda
+     a pinch of salt
+     1 egg yolk for coating
+     50 g of coloured sprinkles
+\end{ingreds}
+
+\begin{method}[Preheat the oven to  \temp{180}.]
+     Mix all ingredients except colored sprinkles and egg yolk for coating in a big bowl.
+     
+     Roll out the dough and cut the cookies with a cookie cutter.
+
+     Coat the cookies with egg yolk and coloured sprinkles.
+
+     Place cut out cookies on a tray, bake @ \temp{180} in pre-heated oven for 10 minutes.
+
+\end {method}
+
+% https://www.chefkoch.de/rezepte/239731097161086/Kokos-Passionsfrucht-Schnitten.html
+\recipe[Caution! Fruityness of endospores may vary.]{\textit{Fruiticutes} Fruit Cuts}
+\serves{4}
+\preptime{$\frac{1}{2}$ hour}
+\cooktime[Chill time]{$\frac{1}{2}$ hours}
+\begin{ingreds}
+     6 passion fruits
+     OR 2 mangoes, small dices
+     3 eggs
+     125 g sugar
+     150 g coconut flakes
+     50 g flour
+     250 g crème fraîche
+     250 g prem-ade flaky pastry
+\end{ingreds}
+
+\begin{method}[Preheat the oven to \temp{180}.]
+     If you work with passionfruit: halve, remove pulp including the seeds and set aside.
+     If you work with mangoes: Cut mango into small dices of approx. 1 cm edge length and set aside.
+
+     Mix together eggs, coconut flakes, flour, crème fraîche and coconut milk. Add passionfruit pulp or diced mangoes and mix until smooth. Grease a baking mould, rectangular or round works fine.
+
+     Roll out the premade flaky pastry on a slightly floured work- space until 3 mm thick. Place into the baking mould, pull up dough approx. 3 cm on the edges of the mould. Uniformly pierce the premade flaky pastry with a fork and add the smoothly mixed dough onto the flaky pastry. Decorate with leftover flaky pastry dough.
+
+     Bake @ \temp{180} in pre-heated oven for 30-35 minutes until golden brown. Let chill for some time and enjoy.
+
+\end {method}
+
+
+
+\end{document}
